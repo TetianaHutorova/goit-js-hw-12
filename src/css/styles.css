@@ -68,7 +68,6 @@ li {
 }
 
 .item {
-  
   border: 1px solid #808080;
   transition: transform 0.3s ease-in-out;
 }
@@ -102,4 +101,19 @@ li {
 .description .span {
   font-weight: 400;
   line-height: 24px;
+}
+
+.btnLoad {
+
+  display: block;
+  margin: 0 auto;
+  width: 125px;
+  height: 40px;
+  margin-top: 32px;
+}
+ 
+
+.displayOff{
+    display: none;
+
 }

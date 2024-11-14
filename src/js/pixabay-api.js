@@ -1,10 +1,27 @@
-export default function serviceHandlerSearch(url, value, parametrs) {
-  const params = new URLSearchParams({ ...parametrs, q: value });
+import axios from 'axios';
 
-  return fetch(`${url}?${params}`).then(response => {
-    if (!response.ok) {
-      throw new Error(response.statusText);
-    }
-    return response.json();
-  });
+const URL = 'https://pixabay.com/api/';
+
+const parametrs = {
+  key: '47002801-76ba89481123b51ee1293cd3a',
+  image_type: 'photo',
+  orientation: 'horizontal',
+  safesearch: true,
+ };
+
+export default async function serviceHandlerSearch(value, page, perPage) {
+  try {
+    const params = new URLSearchParams({
+      ...parametrs,
+      q: value,
+      page,
+      per_page: perPage,
+    });
+
+    const response = await axios(`${URL}?${params}`);
+
+    return response.data;
+  } catch (error) {
+    return error;
+  }
 }
