@@ -13,7 +13,7 @@ const refs = {
   btnSearch: document.querySelector('.js-btnSearch'),
   btnLoad: document.querySelector('.js-btnLoad'),
 };
-let page = 1;
+let page;
 let value;
 const perPage = 15;
 
@@ -27,6 +27,7 @@ let lightbox = new SimpleLightbox('.gallery a', {
 
 async function handlerSearch(evt) {
   evt.preventDefault();
+  page = 1;
   value = evt.target.elements.search.value;
 
   if (!value.trim()) {
@@ -35,6 +36,7 @@ async function handlerSearch(evt) {
       position: 'topRight',
     });
   }
+  refs.loader.classList.add('displayOn');
 
   displayOffAdd();
 
@@ -46,13 +48,6 @@ async function handlerSearch(evt) {
     if (response.hits.length === 0) {
       throw new Error(
         'Sorry, there are no images matching your search query. Please try again!'
-      );
-    }
-    if (Math.floor(response.totalHits / perPage) < page) {
-      displayOffAdd();
-
-      throw new Error(
-        "We're sorry, but you've reached the end of search results."
       );
     }
 
@@ -78,24 +73,20 @@ async function handlerBtnLoad() {
   try {
     const response = await serviceHandlerSearch(value, page, perPage);
 
-    if (response.hits.length === 0) {
-      throw new Error(
-        'Sorry, there are no images matching your search query. Please try again!'
-      );
-    }
-    if (Math.floor(response.totalHits / perPage) < page) {
-      displayOffAdd();
-
-      throw new Error(
-        "We're sorry, but you've reached the end of search results."
-      );
-    }
-
     refs.container.insertAdjacentHTML('beforeend', createMarkup(response.hits));
 
     handlerScroll();
 
     lightbox.refresh();
+
+    if (page * perPage >= response.totalHits) {
+      displayOffAdd();
+      console.log(5);
+
+      throw new Error(
+        "We're sorry, but you've reached the end of search results."
+      );
+    }
   } catch (error) {
     iziToast.error({
       message: error.message,
